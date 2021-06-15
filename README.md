@@ -1,6 +1,9 @@
 # terraform-kubernetes
 Deploying Kubernetes with Terrarom
 
+To be able to apply Terraform template make sure you have correct settings in credentials.tf file.
+
+
 ```
 ├── LICENSE
 ├── README.md
