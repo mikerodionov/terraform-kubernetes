@@ -1,5 +1,6 @@
 # terraform-kubernetes
-Deploying Kubernetes with Terrarom
+
+This repo contains Terraform templates for deploying Kubernetes cluster on Azure.
 
 To be able to apply Terraform template make sure you have correct settings in credentials.tf file.
 
