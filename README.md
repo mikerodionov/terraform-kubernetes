@@ -4,12 +4,13 @@ This repo contains Terraform templates for deploying Kubernetes cluster on Azure
 
 * Resource group
 * Network and subnet
-* 3 NICs
-* 3 Azure VMs for Kubernetes cluster
+* 4 NICs
+* 4 Azure VMs for Kubernetes cluster (Master, Worker x2, NFS node)
 * Security group
-* NFS
 
 To be able to apply Terraform template make sure you have correct settings in credentials.tf file.
+
+NFS node is also used as Ansible controller, which requires open port 22 on it. Ansible controller has to have configured access with publcic key for root user.
 
 
 ```
