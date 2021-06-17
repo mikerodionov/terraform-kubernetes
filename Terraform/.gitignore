@@ -1,2 +1,6 @@
 credentials.tf
+*.tfstate
+*.backup
+*.hcl
 .terraform/
+
