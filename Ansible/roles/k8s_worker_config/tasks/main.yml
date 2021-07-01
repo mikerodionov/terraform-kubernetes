@@ -1,0 +1,7 @@
+---
+# Reset kubeadm - otherwise next task fails on re-run
+- name: Reset kubeadm
+  shell: kubeadm reset -f
+  
+- name: Join worker to cluster
+  shell: "{{ hostvars['master'].join_command }}"

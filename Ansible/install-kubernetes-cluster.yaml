@@ -1,0 +1,20 @@
+---
+- name: Install kubernetes cluster
+  hosts: kubernetes_master
+  gather_facts: true
+  roles:
+    - k8s_prerequisites
+    - k8s_packages
+    - k8s_firewall
+    - docker_install
+    - k8s_master_config
+
+- name: Install wokrers
+  hosts: kubernetes_workers
+  gather_facts: true
+  roles:
+    - k8s_prerequisites
+    - k8s_packages
+    - k8s_firewall
+    - docker_install
+    - k8s_worker_config

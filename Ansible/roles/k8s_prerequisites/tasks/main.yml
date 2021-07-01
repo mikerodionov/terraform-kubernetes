@@ -1,0 +1,51 @@
+---
+- name: Set Time Zone to Europe/Madrid
+  # To verify: timedatectl | grep "Time zone"
+  timezone:
+    name: Europe/Madrid
+
+# Update packages excluding K8s
+# To control Kubernetes packages updates manually:
+# apt-mark hold kubelet kubeadm kubectl containerd
+- name: Update packages
+  package:
+    name: "*"
+    exclude:
+      - kubelet
+      - kubeadm
+      - kubectl
+      - containerd
+    state: latest
+
+# Disable Selinux to allow containers to access the host filesystem
+# Possibly not persist after reboot - to investigate
+- name: Set SELinux permissive mode
+  selinux:
+    policy: targeted
+    state: permissive
+
+# Disable swap step 1
+- name: Disable swap
+  command: swapoff -a
+  changed_when: true
+  when: ansible_swaptotal_mb > 0
+# Disable swap step 2
+- name: Remove swap from fstab
+  lineinfile:
+    path: '/etc/fstab'
+    regexp: '\sswap\s'
+    state: 'absent'
+
+# To allow K8s to manage traffic with firewall
+- name: Modify sysctl entries
+  sysctl:
+    name: '{{ item.key }}'
+    value: '{{ item.value }}'
+    sysctl_set: yes
+    state: present
+    reload: yes
+  ignore_errors: True
+  with_items:
+    - {key: net.bridge.bridge-nf-call-ip6tables, value: 1}
+    - {key: net.bridge.bridge-nf-call-iptables,  value: 1}
+    - {key: net.ipv4.ip_forward,  value: 1}

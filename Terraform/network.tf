@@ -41,3 +41,20 @@ resource "azurerm_public_ip" "myPublicIp" {
   tags = "${var.tags}"
   count = 4
 }
+
+# It loosk like for Dynamic allocation IP and MAC are only visible after VM start
+# so it takes secund run of terraform apply to see them
+output "PublicIPs" {
+  description = "Public IP addresses"
+  value = "${azurerm_public_ip.myPublicIp.*.ip_address}"
+}
+output "VmNames" {
+  description = "VM names"
+  value = "${azurerm_linux_virtual_machine.myVM.*.computer_name}"
+}
+
+output "VmMACs" {
+  description = "VM names"
+  value = "${azurerm_network_interface.myNic.*.mac_address}"
+}
+

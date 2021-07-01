@@ -1,0 +1,20 @@
+[azure_servers:children]
+kubernetes_servers
+nfs_servers
+
+[kubernetes_servers:children]
+kubernetes_master
+kubernetes_workers
+
+[kubernetes_master]
+master ansible_host=192.168.1.142
+
+[kubernetes_workers]
+worker1 ansible_host=192.168.1.146
+worker2 ansible_host=192.168.1.29
+
+[nfs_servers]
+nfs ansible_host=192.168.1.147
+
+[all:vars]
+ansible_python_interpreter=/usr/bin/python3

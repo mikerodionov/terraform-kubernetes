@@ -1,39 +1,27 @@
-variable "location" {
-  type = string
-  description = "Azure Region for Infrastructure Deployment"
-  default = "West Europe"
-}
 # Kubernetes minimum requirements
 # Master 2 GB, 2 CPU (kubectl)
 # Worker 1.5 GB, 2 CPU (pods)
-variable "kubernetes_master_vm_size" {
-  type = string
-  description = "VM Size for Kubernetes master VM(s)"
-  default = "Standard_A4_v2" # 8 GB, 4 CPU
+# Standard_D1_v2 = 3,5 GB, 1 CPU
+# Standard_D2_v2" = 7 GB, 2 CPU
+# There is a limit of CPU per family which may not allow allocate desired sizes without request to increase the limit
+# VM will be getting adapters with IPs 192.168.1.10 - 192.168.1.13
+variable "vm_sizes" {
+  type = list(string)
+  description = "VM Sizes list"
+  default = ["Standard_D1_v2", "Standard_D1_v2", "Standard_D1_v2", "Standard_D1_v2"]
 }
 
-variable "kubernetes_worker_vm_size" {
-  type = string
-  description = "VM Size for Kubernetes worker VM(s)"
-  default = "Standard_A2_v2" # 4 GB, 2 CPU
+variable "vm_names" {
+    type = list(string)
+    description = "VM Names List"
+    default = ["master", "worker1", "worker2", "nfs"]
 }
 
-variable "kubeworker_vm_name" {
+# Azure uses its own internal domain by default with DNS resolution working
+variable "domain" {
     type = string
-    description = "Kubernetes worker VM(s) base name"
-    default = "worker"
-}
-
-variable "kubemaster_vm_name" {
-    type = string
-    description = "Kubernetes master VMs to create"
-    default = "master"
-}
-
-variable "nfs_vm_name" {
-    type = string
-    description = "NFS VMs to create"
-    default = "nfs"
+    description = "Domain suffix for machine names"
+    default = "mikerodionov.com"
 }
 
 variable "external_ip" {

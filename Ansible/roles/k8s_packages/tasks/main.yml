@@ -1,0 +1,30 @@
+---
+# Add Kubernetes repo - yum module works for dnf package manager as it
+# also reads from [repository] section of /etc/yum.repos.d/ directory
+- name: Add Kubernetes repository
+  yum_repository:
+    name: Kubernetes
+    description: Kubernetes yum repo
+    baseurl: http://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+    gpgcheck: yes
+    gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+
+# Install/update packages K8s packages (all nodes)
+- name: Install/update packages
+  dnf:
+    name:
+      - kubelet
+      - kubeadm
+      - kubectl
+    disable_excludes: kubernetes
+    # Latest was failing with error
+    # There is a possiblity to enforce manual control over K8s component updates
+    # apt-mark hold kubelet kubeadm kubectl
+    state: present
+
+# Enable and start kubelet service (for all nodes)
+- name: Enable kubelet service
+  service:
+    name: kubelet
+    enabled: yes
+    state: started

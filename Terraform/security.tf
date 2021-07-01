@@ -17,3 +17,10 @@ resource "azurerm_network_security_group" "KubeSecGroup" {
      }
     tags = "${var.tags}"
 }
+
+# Link security group to NIC
+resource "azurerm_network_interface_security_group_association" "SgAssociation" {
+  network_interface_id = element(azurerm_network_interface.myNic[*].id, count.index)
+  network_security_group_id = azurerm_network_security_group.KubeSecGroup.id
+  count = 4
+}
