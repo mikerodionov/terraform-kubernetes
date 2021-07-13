@@ -26,6 +26,14 @@
   with_items: '{{ k8s_worker_ports }}'
   when: "'worker' in ansible_hostname"
 
+- name: FW Rules - NFS
+  firewalld:
+    service: "{{ item }}"
+    permanent: yes
+    state: enabled
+  with_items: '{{ nfs_services }}'
+  when: "'nfs' in ansible_hostname"
+
 # Activate transparent masquerading
 # to allow PODs communication via VXLAN
 - name: Activate transparent masquerading

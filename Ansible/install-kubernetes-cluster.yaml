@@ -18,3 +18,14 @@
     - k8s_firewall
     - docker_install
     - k8s_worker_config
+
+- name: Install NFS server
+  hosts: nfs_servers
+  roles:
+    - nfs
+    - k8s_firewall
+
+- name: Install Kibana
+  hosts: kubernetes_master
+  roles:
+    - k8s_kibana

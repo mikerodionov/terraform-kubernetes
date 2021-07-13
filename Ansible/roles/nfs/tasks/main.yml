@@ -1,0 +1,32 @@
+---
+# Ensure NFS packages installed
+- name: Ensure NFS required packages are present/updated
+  dnf:
+    name:
+      - nfs-utils
+      - nfs4-acl-tools
+      - wget
+    state: latest
+
+# Start NFS service
+- name: Start the NFS service
+  service:
+    name: nfs-server
+    # We use restarted so that in case service was started
+    # but Ansible changed config - thus we do restart to pick up config changes
+    state: restarted
+    enabled: yes
+
+# Create share directory
+- name: Create mountable dir
+  file: path=/mnt/nfs_share state=directory mode=777 owner=root group=root
+
+- name: Create exports file
+  copy:
+    dest: "/etc/exports"
+    content: |
+      /mnt/nfs_share            192.168.1.147/24(rw,sync,no_root_squash,no_subtree_check)
+
+# Reload exports
+- name: Reload firewalld
+  shell: exportfs -arv

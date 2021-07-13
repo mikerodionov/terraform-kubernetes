@@ -11,3 +11,9 @@ k8s_master_ports:
 k8s_worker_ports:
   - 10250
   - 30000-32767
+
+# NFS services
+nfs_services:
+  - nfs
+  - rpc-bind
+  - mountd 

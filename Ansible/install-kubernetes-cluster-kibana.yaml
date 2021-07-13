@@ -1,0 +1,5 @@
+---
+- name: Install Kibana
+  hosts: kubernetes_master
+  roles:
+    - k8s_kibana

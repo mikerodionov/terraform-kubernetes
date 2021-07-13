@@ -53,3 +53,86 @@
   set_fact:
     join_command: "{{ join_command_raw.stdout_lines[0] }}"
 
+# Install Calico SDN to enable PODs communication
+# When not installed all nodes will have Not ready status with respective error
+# To verify:
+# kubectl get nodes
+# kubectl describe nodes
+- name: Download calico.yaml
+  shell: wget https://docs.projectcalico.org/v3.8/manifests/calico.yaml
+
+- name: Install Calico SDN
+  shell: kubectl apply -f calico.yaml
+
+# Exposing this properly requires reverse proxy and more work
+# Create rbac.yml
+#- name: Create rbac.yml
+#  copy:
+#    dest: "$HOME/rbac.yaml"
+#    content: |
+#      apiVersion: rbac.authorization.k8s.io/v1
+#      kind: ClusterRoleBinding
+#      metadata:
+#        name: default-rbac
+#      subjects:
+#      - kind: ServiceAccount
+#        name: default
+#        namespace: default
+#      roleRef:
+#        kind: ClusterRole
+#        name: cluster-admin
+#        apiGroup: rbac.authorization.k8s.io
+
+# Configure Kubernetes dashboard
+#- name: Configure Kubernetes dashboard
+#  shell: |
+#    kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+#    helm init
+#    kubectl apply -f rbac.yaml
+#    kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml
+#    kubectl create clusterrolebinding kubernetes-dashboard --clusterrole=cluster-admin --serviceaccount=kube-system:kubernetes-dashboard
+
+# Configure NFS based Persistent Volume
+- name: Create NFS based Persistent Volume configuration
+  copy:
+    dest: "$HOME/nfs-pv.yaml"
+    content: |
+      apiVersion: v1
+      kind: PersistentVolume
+      metadata:
+        name: nfs-pv
+      spec:
+        capacity:
+          storage: 5Gi
+        accessModes:
+          - ReadWriteMany
+        nfs:
+          path: /mnt/nfs_share
+          server: 192.168.1.147
+        persistentVolumeReclaimPolicy: Recycle
+
+# Configure NFS based Persistent Volume Claim
+- name: Create NFS based Persistent Volume Claim configuration
+  copy:
+    dest: "$HOME/nfs-pvc.yaml"
+    content: |
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: nfs-pvc
+      spec:
+        storageClassName: ""
+        accessModes:
+          - ReadWriteMany
+        resources:
+          requests:
+            storage: 5Gi
+        volumeName: nfs-pv
+
+# To verify - kubectl get pv nfs-pv
+- name: Crete NFS Persistent Volume
+  shell: kubectl create -f nfs-pv.yaml
+
+# To verify - kubectl get pvc nfs-pvc
+- name: Crete NFS Persistent Volume Claim
+  shell: kubectl create -f nfs-pvc.yaml
