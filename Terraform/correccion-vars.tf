@@ -22,3 +22,9 @@ variable "ssh_user" {
   description = "Usuario para hacer ssh"
   default = "mikhail"
 }
+
+variable "external_ip" {
+    type = list(string)
+    description = "Allowed external IP"
+    default = ["85.56.51.6"]
+}
