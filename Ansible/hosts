@@ -7,14 +7,14 @@ kubernetes_master
 kubernetes_workers
 
 [kubernetes_master]
-master ansible_host=192.168.1.142
+master ansible_host=20.103.248.30
 
 [kubernetes_workers]
-worker1 ansible_host=192.168.1.146
-worker2 ansible_host=192.168.1.29
+worker1 ansible_host=20.103.249.152
+worker2 ansible_host=20.103.249.26
 
 [nfs_servers]
-nfs ansible_host=192.168.1.147
+nfs ansible_host=20.103.250.238
 
 [all:vars]
 ansible_python_interpreter=/usr/bin/python3
