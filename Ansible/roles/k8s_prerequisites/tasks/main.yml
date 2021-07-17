@@ -36,6 +36,13 @@
     regexp: '\sswap\s'
     state: 'absent'
 
+# Load the br_netfilter module
+- name: Ensure br_netfilter is enabled
+  modprobe:
+    name: br_netfilter
+    state: present
+
+
 # To allow K8s to manage traffic with firewall
 - name: Modify sysctl entries
   sysctl:
