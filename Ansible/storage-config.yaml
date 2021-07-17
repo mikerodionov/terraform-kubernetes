@@ -1,0 +1,5 @@
+---
+- name: PV & PVC
+  hosts: kubernetes_master
+  roles:
+    - k8s_provision_storage

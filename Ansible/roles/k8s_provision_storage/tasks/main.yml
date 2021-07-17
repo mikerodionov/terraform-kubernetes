@@ -1,0 +1,69 @@
+# PV & PVC
+
+# # Configure NFS Storage Class
+# # To verify - kubectl describe sc
+# # There is no dynamic provisioner for NFS available OOB
+# - name: Create nfs-storage Storage Class
+#   kubernetes.core.k8s:
+#     state: present
+#     definition:
+#       apiVersion: storage.k8s.io/v1
+#       kind: StorageClass
+#       metadata:
+#         name: nfs-storage
+#       #provisioner: kubernetes.io/gce-pd
+#       #volumeBindingMode: WaitForFirstConsumer
+#       #parameters:
+#         type: pd-standard
+
+# Creating namespace YAML
+# To verify - kubectl get namespaces
+- name: Create Logging Stack namespace
+  k8s:
+    name: logging-namespace
+    api_version: v1
+    kind: Namespace
+    state: present
+
+# Configure NFS based Persistent Volume
+# To verify - kubectl get pv nfs-pv
+# PVs are not "namespaces" as they belong to a cluster
+- name: Create NFS based Persistent Volume configuration
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: PersistentVolume
+      state: present
+      metadata:
+        name: nfs-pv
+        #namespace: logging-namespace
+      spec:
+        #storageClassName: nfs-storage
+        capacity:
+          storage: 15Gi
+        accessModes:
+          - ReadWriteMany
+        nfs:
+          server: 192.168.1.147
+          path: "/mnt/nfs_share"
+        persistentVolumeReclaimPolicy: Retain
+
+# Configure NFS based Persistent Volume Claim
+# To verify - kubectl get pvc nfs-pvc
+- name: Create NFS based Persistent Volume Claim configuration
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: nfs-pvc
+        namespace: logging-namespace
+      spec:
+        #storageClassName: nfs-storage
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi

@@ -8,7 +8,7 @@
 variable "vm_sizes" {
   type = list(string)
   description = "VM Sizes list"
-  default = ["Standard_D1_v2", "Standard_D1_v2", "Standard_D1_v2", "Standard_D1_v2"]
+  default = ["Standard_A2_v2", "Standard_D1_v2", "Standard_D1_v2", "Standard_D1_v2"]
 }
 
 variable "vm_names" {

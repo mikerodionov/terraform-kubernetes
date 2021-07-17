@@ -33,14 +33,17 @@
             name: inter-node
 
 # Create StatefulSet - provides identity for pods and allows persistent storage grant
+# To verify - kubectl rollout status sts/es-cluster --namespace=logging-namespace
 - name: Create Elasticsearch StatefulSet
   kubernetes.core.k8s:
     definition:
       apiVersion: apps/v1
-      kind: StatefulSet
+      kind: Deployment
       metadata:
         name: es-cluster
         namespace: logging-namespace
+        labels:
+          app: elasticsearch
       spec:
         serviceName: elasticsearch
         replicas: 1
@@ -68,7 +71,7 @@
                 name: inter-node
                 protocol: TCP
               volumeMounts:
-              - name: data
+              - name: nfs-pv
                 mountPath: /usr/share/elasticsearch/data
               env:
                 - name: cluster.name
@@ -90,7 +93,7 @@
               securityContext:
                 privileged: true
               volumeMounts:
-              - name: data
+              - name: nfs-pv
                 mountPath: /usr/share/elasticsearch/data
             - name: increase-vm-max-map
               image: busybox
@@ -102,11 +105,20 @@
               command: ["sh", "-c", "ulimit -n 65536"]
               securityContext:
                 privileged: true
-            - containers:
-            - name: myfrontend
-            volumeMounts:
-            - mountPath: "/var/data"
-              name: nfs-pvc
-
-                
-        
+            volumes:
+              - name: nfs-pv
+                persistentVolumeClaim:
+                  claimName: nfs-pvc
+        # volumeClaimTemplates:
+        # - metadata:
+        #     name: data
+        #     #namespace: logging-namespace
+        #     labels:
+        #       app: elasticsearch
+        #   spec:
+        #     accessModes:
+        #       - ReadWriteOnce
+        #     #storageClassName: nfs-storage
+        #     resources:
+        #       requests:
+        #         storage: 1Gi
