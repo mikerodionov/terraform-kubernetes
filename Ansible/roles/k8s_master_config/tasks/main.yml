@@ -1,4 +1,9 @@
 ---
+- name: Mount NFS share
+  become: yes
+  become_method: sudo
+  shell: mount -t nfs4 10.0.1.13:/mnt/nfs_share /mnt/nfs_share
+
 # Pre-pull Kubernetess images
 - name: Pull K8s images
   become: true
@@ -10,7 +15,7 @@
 # Default docker network is 172.17.0.0/16
 - name: Allow access from containers to localhost
   firewalld:
-    rich_rule: 'rule family="ipv4" source address="172.17.0.0/16" accept'
+    rich_rule: 'rule family="ipv4" source address="10.244.0.0/16" accept'
     permanent: true
     state: enabled
 
@@ -20,7 +25,9 @@
 
 # Initialize master and make sure initialization completes
 - name: initialize the cluster control-plane
-  shell: kubeadm init --pod-network-cidr=192.169.0.0/16
+  # For Calico
+  # shell: kubeadm init --pod-network-cidr=192.169.0.0/16
+  shell: sudo kubeadm init --pod-network-cidr=10.244.0.0/16
   register: result
   until: result.stdout.find("Your Kubernetes control-plane has initialized successfully!") != -1
   retries: 3
@@ -54,15 +61,23 @@
     join_command: "{{ join_command_raw.stdout_lines[0] }}"
 
 # Install Calico SDN to enable PODs communication
+# This plugin worked well testing with VirtualBox
 # When not installed all nodes will have Not ready status with respective error
 # To verify:
 # kubectl get nodes
 # kubectl describe nodes
-- name: Download calico.yaml
-  shell: wget https://docs.projectcalico.org/v3.8/manifests/calico.yaml
+# - name: Download calico.yaml
+#   shell: wget https://docs.projectcalico.org/v3.8/manifests/calico.yaml
 
-- name: Install Calico SDN
-  shell: kubectl apply -f calico.yaml
+# - name: Install Calico SDN
+#   shell: kubectl apply -f calico.yaml
+
+- name: Download kube-flannel.yml
+  shell: wget https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+- name: Install Flannel CDN
+  shell: kubectl apply -f kube-flannel.yml
+
 
 # Exposing this properly requires reverse proxy and more work
 # Create rbac.yml

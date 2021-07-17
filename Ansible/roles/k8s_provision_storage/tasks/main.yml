@@ -1,21 +1,3 @@
-# PV & PVC
-
-# # Configure NFS Storage Class
-# # To verify - kubectl describe sc
-# # There is no dynamic provisioner for NFS available OOB
-# - name: Create nfs-storage Storage Class
-#   kubernetes.core.k8s:
-#     state: present
-#     definition:
-#       apiVersion: storage.k8s.io/v1
-#       kind: StorageClass
-#       metadata:
-#         name: nfs-storage
-#       #provisioner: kubernetes.io/gce-pd
-#       #volumeBindingMode: WaitForFirstConsumer
-#       #parameters:
-#         type: pd-standard
-
 # Creating namespace YAML
 # To verify - kubectl get namespaces
 - name: Create Logging Stack namespace

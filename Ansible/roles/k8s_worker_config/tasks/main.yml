@@ -5,3 +5,8 @@
   
 - name: Join worker to cluster
   shell: "{{ hostvars['master'].join_command }}"
+
+- name: Mount NFS share
+  become: yes
+  become_method: sudo
+  shell: mount -t nfs4 10.0.1.13:/mnt/nfs_share /mnt/nfs_share

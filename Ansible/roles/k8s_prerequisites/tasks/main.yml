@@ -4,18 +4,19 @@
   timezone:
     name: Europe/Madrid
 
-# Update packages excluding K8s
-# To control Kubernetes packages updates manually:
-# apt-mark hold kubelet kubeadm kubectl containerd
-- name: Update packages
-  package:
-    name: "*"
-    exclude:
-      - kubelet
-      - kubeadm
-      - kubectl
-      - containerd
-    state: latest
+# Takes too long on a fresh VM
+# # Update packages excluding K8s
+# # To control Kubernetes packages updates manually:
+# # apt-mark hold kubelet kubeadm kubectl containerd
+# - name: Update packages
+#   package:
+#     name: "*"
+#     exclude:
+#       - kubelet
+#       - kubeadm
+#       - kubectl
+#       - containerd
+#     state: latest
 
 # Disable Selinux to allow containers to access the host filesystem
 # Possibly not persist after reboot - to investigate
@@ -69,3 +70,9 @@
     name:
       - nfs-utils
     state: latest
+
+# Create mount directory for NFS share
+- name: Create mount directory for NFS share
+  file:
+    path: /mnt/nfs_share
+    state: directory

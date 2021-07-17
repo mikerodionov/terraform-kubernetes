@@ -46,7 +46,7 @@
           app: elasticsearch
       spec:
         serviceName: elasticsearch
-        replicas: 1
+        replicas: 3
         selector:
           matchLabels:
             app: elasticsearch
@@ -107,8 +107,8 @@
                 privileged: true
             volumes:
               - name: nfs-pv
-                persistentVolumeClaim:
-                  claimName: nfs-pvc
+                hostPath:
+                  path: /mnt/nfs-share
         # volumeClaimTemplates:
         # - metadata:
         #     name: data
