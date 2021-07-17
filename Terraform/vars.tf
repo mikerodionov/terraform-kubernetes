@@ -24,12 +24,6 @@ variable "domain" {
     default = "mikerodionov.com"
 }
 
-variable "external_ip" {
-    type = list(string)
-    description = "Allowed external IP"
-    default = ["85.56.51.6"]
-}
-
 variable "tags" {
     type = map
     default = {"environment":"Practice Case 2"}
