@@ -1,6 +1,6 @@
 # terraform-kubernetes
 
-This repo contains Terraform templates for deploying Kubernetes cluster on Azure. Although terraform template files themself contain description of infrastructure to be provisioned, below you can find a list of Azure resources provisioned by template:
+This repo contains Terraform templates for deploying Kubernetes cluster on Azure. Although terraform template files themselves contain description of infrastructure to be provisioned, below you can find a list of Azure resources provisioned by template:
 
 * Resource group
 * Network and subnet
