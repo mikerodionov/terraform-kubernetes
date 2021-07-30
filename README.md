@@ -10,7 +10,7 @@ This repo contains Terraform templates for deploying Kubernetes cluster on Azure
 
 To be able to apply Terraform template make sure you have correct settings in credentials.tf file.
 
-NFS node is also used as Ansible controller, which requires open port 22 on it. Ansible controller has to have configured access with publcic key for root user.
+NFS node is also used as Ansible controller, which requires open port 22 on it. Ansible controller has to have configured access with public key for root user.
 
 
 ```
